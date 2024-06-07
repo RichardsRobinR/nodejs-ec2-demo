@@ -35,7 +35,9 @@ jobs:
         run: docker build -t nodjsdemoimage/ec2-demo-app .
 
       - name: Push image to Docker hub
-        run: docker push nodjsdemoimage/ec2-demo-app:latest
+        run: |
+          docker tag nodjsdemoimage richardsrobinr/nodjsdemoimage
+          docker push richardsrobinr/nodjsdemoimage
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
