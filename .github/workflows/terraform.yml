@@ -37,7 +37,7 @@ jobs:
         with:
           # context: DockerFileFolder/
           push: true
-          tags: nodjsdemoimage/ec2-demo-app:latest
+          tags: richardsrobinr/ec2-demo-app:latest
 
       # - name: Configure AWS credentials
       #   uses: aws-actions/configure-aws-credentials@v4
