@@ -65,7 +65,7 @@ jobs:
 
       # Generates an execution plan for Terraform
       - name: Terraform Plan
-        run: terraform plan -input=false
+        run: terraform plan -out "tfplan"
         continue-on-error: true
 
         # On push to "main", build or change infrastructure according to Terraform configuration files
@@ -74,3 +74,6 @@ jobs:
         if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
         # run: terraform apply -auto-approve -input=false
         run: terraform apply -auto-approve
+
+      - name: Clean up 
+        run: rm tfplan
