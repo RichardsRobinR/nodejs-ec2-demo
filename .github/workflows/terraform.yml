@@ -31,41 +31,41 @@ jobs:
           password: ${{secrets.DOCKER_PASSWORD}}
         # run: docker login - u ${{secrets.DOCKER_USERNAME}} -P ${{secrets.DOCKER_PASSWORD}}
 
-      - name: Build Docker Image
-        run: docker build -t nodjsdemoimage/ec2-demo-app .
 
-      - name: Push image to Docker hub
-        run: |
-          docker tag nodjsdemoimage richardsrobinr/nodjsdemoimage
-          docker push richardsrobinr/nodjsdemoimage
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Build and Push docker image to registry
+        uses: docker/build-push-action@v5
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          context: DockerFileFolder/
+          push: true
+          tags: nodjsdemoimage/ec2-demo-app:latest
 
-      # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          cli_config_credentials_token: ${{ secrets.TF_TOKEN }}
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-region: ${{ env.AWS_REGION }}
 
-      # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-      - name: Terraform Init
-        run: terraform init
+      # # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+      # - name: Setup Terraform
+      #   uses: hashicorp/setup-terraform@v1
+      #   with:
+      #     cli_config_credentials_token: ${{ secrets.TF_TOKEN }}
 
-      # Checks that all Terraform configuration files adhere to a canonical format
-      - name: Terraform Format
-        run: terraform fmt -check
+      # # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+      # - name: Terraform Init
+      #   run: terraform init
 
-      # Generates an execution plan for Terraform
-      - name: Terraform Plan
-        run: terraform plan -input=false
+      # # Checks that all Terraform configuration files adhere to a canonical format
+      # - name: Terraform Format
+      #   run: terraform fmt -check
 
-        # On push to "main", build or change infrastructure according to Terraform configuration files
-        # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
-        run: terraform apply -auto-approve -input=false
+      # # Generates an execution plan for Terraform
+      # - name: Terraform Plan
+      #   run: terraform plan -input=false
+
+      #   # On push to "main", build or change infrastructure according to Terraform configuration files
+      #   # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+      # - name: Terraform Apply
+      #   if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
+      #   run: terraform apply -auto-approve -input=false
