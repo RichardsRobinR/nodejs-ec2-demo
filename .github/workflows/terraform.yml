@@ -32,7 +32,7 @@ jobs:
         # run: docker login - u ${{secrets.DOCKER_USERNAME}} -P ${{secrets.DOCKER_PASSWORD}}
 
       - name: Build Docker Image
-        run: docker build - t nodjsdemoimage/ec2-demo-app .
+        run: docker build -t nodjsdemoimage/ec2-demo-app .
 
       - name: Push image to Docker hub
         run: docker push nodjsdemoimage/ec2-demo-app:latest
