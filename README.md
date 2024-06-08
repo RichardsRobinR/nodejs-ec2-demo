@@ -1,4 +1,8 @@
 
+Terraform
+
+![image](https://github.com/RichardsRobinR/nodejs-ec2-demo/assets/33860335/8f3dde86-4167-481b-b83f-1b48cf56278c)
+
 Github Actions
 
 ![image](https://github.com/RichardsRobinR/nodejs-ec2-demo/assets/33860335/fced0ae6-e3ee-40ae-9e70-f55216a02dd7)
