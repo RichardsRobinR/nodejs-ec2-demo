@@ -77,20 +77,31 @@ jobs:
       - name: Clean up 
         run: rm tfplan
 
-      - name: executing remote ssh commands using ssh key
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: | 
-            whoami
-            sudo docker stop ec2-demo-app
-            sudo docker images
-            sudo docker run -d -p 8080:8080 --name ec2-demo-app richardsrobinr/ec2-demo-app:latest
-            curl ${{ secrets.IP_V4 }}:8080
-            sudo docker ps
+      - name: Build & Deploy
+        env:
+            PRIVATE_KEY: ${{ secrets.SSH_KEY }}
+            HOSTNAME: ${{secrets.SSH_HOST}}
+            USER_NAME: ${{secrets.SSH_USER}}
+      
+        run: |
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+          whoami
+
+      # - name: executing remote ssh commands using ssh key
+      #   uses: appleboy/ssh-action@v1.0.3
+      #   with:
+      #     host: ${{ secrets.SSH_HOST }}
+      #     username: ${{ secrets.SSH_USER }}
+      #     key: ${{ secrets.SSH_KEY }}
+      #     port: ${{ secrets.SSH_PORT }}
+      #     script: | 
+      #       whoami
+      #       sudo docker stop ec2-demo-app
+      #       sudo docker images
+      #       sudo docker run -d -p 8080:8080 --name ec2-demo-app richardsrobinr/ec2-demo-app:latest
+      #       curl ${{ secrets.IP_V4 }}:8080
+      #       sudo docker ps
 
       # - name: Add SSH key
       #   uses: webfactory/ssh-agent@v0.9.0
