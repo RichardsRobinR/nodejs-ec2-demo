@@ -21,18 +21,16 @@ provider "aws" {
 
 resource "random_pet" "sg" {}
 
-resource "aws_instance" "app_server" {
-  ami           = "ami-0ff72998b38e59e40"
-  instance_type = "t2.micro"
-  key_name = "nodejs-ec2-demo-key"
-
-  tags = {
-    Name = "AppServerInstance"
-  }
-}
-
 resource "aws_security_group" "web-sg" {
   name = "${random_pet.sg.id}-sg"
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   ingress {
     from_port   = 8080
     to_port     = 8080
@@ -47,3 +45,15 @@ resource "aws_security_group" "web-sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+resource "aws_instance" "app_server" {
+  ami           = "ami-0ff72998b38e59e40"
+  instance_type = "t2.micro"
+  key_name = "nodejs-ec2-demo-key"
+  vpc_security_group_ids = [aws_security_group.web-sg.id]
+
+  tags = {
+    Name = "AppServerInstance"
+  }
+}
+
